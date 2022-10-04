@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const personaSchema = new mongoose.Schema({
-    Nombre: Number,              //version corta
-    Apellido: {Type: String},    //version larga
-    DNI: Number,
-    Mail: String,
-    Telefono: String,
+    nombre: String,              //version corta
+    apellido: String,    
+    dni: String,
+    mail: String,
+    telefono: String
     /* otras variantes
     activo: Boolean,
     cantHijos: Number,
@@ -14,9 +14,9 @@ const personaSchema = new mongoose.Schema({
 })
 
 personaSchema.virtual("fullName").get(()=>{
-    return `${this.Nombre}  ${this.Apellido}`;
+    return `${this.nombre}  ${this.apellido}`;
 })
 
-const Persona = mongoose.model("Personas", personaSchema) //"Personas" es nombre de la coleccion en la base MongoDb
+const Persona = mongoose.model("personas", personaSchema) //"Personas" es nombre de la coleccion en la base MongoDb
 
 module.exports = Persona;
