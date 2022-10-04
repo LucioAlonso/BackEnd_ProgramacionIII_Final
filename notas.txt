@@ -1,0 +1,32 @@
+notas para mongo:
+DNI, Nombre, Apellido, Mail, Telefono Movil
+
+Notas Express:
+npm install --save express
+
+para requerir express colocamos:
+	const express = require("express");
+	const app = express();
+	const port = 27017;
+
+se instala nodemon desde la consola de forma global se hace una vez
+	npm install -g nodemon
+
+Para ejecutar todo se hace en la consola:
+	nodemon index
+
+Agregamos en el json un script para poder arrancar el proyecto utilizando solo el comando:
+	npm start
+
+
+Instalamos la dependencia mongoos
+	 npm install --save mongoos
+
+
+Hay que crear un usuario
+
+Hace todo lo que falta del back-end
+	El registro
+	modelar las tablas para la base de datos  (puede ser que tenga 3 tablas, reclamos, personas, usuario)
+	El usuario tiene una persona y una persona un usuario.
+	Los reclamos tienen una persona, pero una persona puede tener muchos reclamos, se necesitaria una clave foranea
