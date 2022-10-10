@@ -30,3 +30,8 @@ Hace todo lo que falta del back-end
 	modelar las tablas para la base de datos  (puede ser que tenga 3 tablas, reclamos, personas, usuario)
 	El usuario tiene una persona y una persona un usuario.
 	Los reclamos tienen una persona, pero una persona puede tener muchos reclamos, se necesitaria una clave foranea
+
+Tratar de hacer que simpre por detras se este mandando el body con el usuario, como seguridad, 
+Entonces todos los cambios se hacen directamente usando el body siempre y no tenienedo que hacer la busqueda en la base de datos.
+
+El problema de hacer esto es que si la base de datos borra un usuario por ejemplo y yo sigo logueado, este va a poder seguir haciendo cosas en la base de datos.
