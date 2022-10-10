@@ -14,8 +14,8 @@ const personSchema = new mongoose.Schema({
     */
 })
 
-personSchema.virtual("fullName").get(()=>{
-    return `${this.name}  ${this.lastname}`;
+personSchema.virtual("fullName").get(function () {
+    return this.name + ' ' + this.lastname;
 })
 
 const Person = mongoose.model("persons", personSchema) //"Personas" es nombre de la coleccion en la base MongoDb

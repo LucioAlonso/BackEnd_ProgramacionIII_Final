@@ -5,6 +5,11 @@ const userSchema = new mongoose.Schema({
     rol: String
 })
 
+userSchema.virtual("getRol").get(function () {
+    return this.rol;
+})
+
+
 const User = mongoose.model("users", userSchema);
 
 module.exports = User;
