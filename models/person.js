@@ -5,7 +5,8 @@ const personSchema = new mongoose.Schema({
     lastname: String,    
     dni: String,
     mail: String,
-    phone: String
+    phone: String,
+    state : String
     /* otras variantes
     activo: Boolean,
     cantHijos: Number,

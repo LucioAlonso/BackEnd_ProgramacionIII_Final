@@ -1,8 +1,9 @@
 const Person = require("../models/person");
 const express = require("express");
+const {checkRol, verifyToken} = require("../middlewares/authentication")
 const app = express();
 
-app.get("/person/all", (req, res) => {
+app.get("/person/all", [verifyToken, checkRol],(req, res) => {
     Person.find().exec((err, data) => {
 
         if(err){
@@ -28,16 +29,14 @@ app.get("/person/:id", (req, res) => {         //al anteponerle : adelante a id,
 })
 
 app.post("/person/add", async (req, res) => {
-    console.log(req.body); //es por donde se manda la informacion, osea por detras y no por la url
-
-    let body = req.body;
-
+    let {name, lastname, dni, mail, phone} = req.body;
     let person = new Person({
-        name: body.name,              
-        lastname: body.lastname,    
-        dni: body.dni,
-        mail: body.mail,
-        phone: body.phone
+        name,              
+        lastname,    
+        dni,
+        mail,
+        phone,
+        state : "enable"
     })
 
     try{
@@ -54,14 +53,15 @@ app.post("/person/add", async (req, res) => {
 })
 
 app.put("/person/edit",async (req, res) => {
-    let body = req.body;
 
+    let {name, lastname, dni, mail, phone, state} = req.body;
     let person = new Person({
-        name: body.name,              
-        lastname: body.lastname,    
-        dni: body.dni,
-        mail: body.mail,
-        phone: body.phone
+        name,              
+        lastname,    
+        dni,
+        mail,
+        phone,
+        state
     })
 
     try{

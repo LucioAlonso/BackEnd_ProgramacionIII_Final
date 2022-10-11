@@ -10,27 +10,25 @@ var salt = bcrypt.genSaltSync(10);
 const app = express();
 
 app.post("/user/register", async (req, res) => {
-    let body = req.body;
+    let {userName, rol} = req.body;
 
     let user = new User({
-        userName: body.userName,              
-        password: bcrypt.hashSync(body.password, salt),   
-        rol: body.rol,
+        userName,              
+        password: bcrypt.hashSync(req.body.password, salt),   
+        rol : "taxpayer",
+        state : "enabled"
     })
 
-    //ACA TENGO QUE HACER LA COMPARACION DE SI EXISTE EL User O NO EN LA BASE DE DATOS
-    if((await User.find({userName : user.userName})).length == 0){
-        try{
+    if(!(await User.findOne({userName : user.userName}))){
             let result = await user.save();  
-
             let person = new Person({
                 _id : user._id,
-                user: user.userName,
                 name: "",              
                 lastname: "",    
                 dni: "",
                 mail: "",
-                phone: ""
+                phone: "",
+                state: "enabled"
             })
 
             console.log(person.fullName)
@@ -39,19 +37,13 @@ app.post("/user/register", async (req, res) => {
                 res:"ok",
                 UserAdd: result
             });
-        } catch (err){
-            res.status(500).json({
-                err
-            })
-        }
     }
     else
     {
         res.status(500).json({
             err : "A user with that name already exists"
         })
-    }    
-
+    } 
 })
 
 app.post("/user/login", (req, res) => {
@@ -61,7 +53,6 @@ app.post("/user/login", (req, res) => {
         password,    
         rol,
     })
-       
     User.findOne({userName : user.userName} ).exec(async (err, data) => {
         if(err)                   //si hay un error con la conexion de la base de datos
         {
@@ -76,7 +67,7 @@ app.post("/user/login", (req, res) => {
                 error: "The username or password entered is invalid"
             }); 
         }
-        else if(bcrypt.compareSync(password, data.password))      //esta el usuario, compara las constraseñas
+        else (bcrypt.compareSync(password, data.password))      //esta el usuario, compara las constraseñas
         {
             const token = await generateJWT(data._id);
             res.status(200).json({

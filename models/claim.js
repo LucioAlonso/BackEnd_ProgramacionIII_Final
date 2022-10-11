@@ -6,6 +6,7 @@ const claimSchema = new mongoose.Schema({
     resolveDate : Date,
     category : String,
     residence : String,
+    state : String
 })
 
 const Claim = mongoose.model("claim", claimSchema);

@@ -5,14 +5,12 @@ const app = express();
 
 app.get("/claim/all", [verifyToken, checkRol],(req, res) => {         //solamente un administrador lo puede usar
     Claim.find().exec((err, data) => {
-
         if(err){
             res.status(500).json({
                 res:"fail",
                 err
             }); 
         } 
-
         res.status(200).json({
             res:"ok",
             claims: data
@@ -31,14 +29,15 @@ app.get("/claim/:id", (req, res) => {         //al anteponerle : adelante a id, 
 app.post("/claim/add", async (req, res) => {
     console.log(req.body); //es por donde se manda la informacion, osea por detras y no por la url
 
-    let body = req.body;
+    let {name, lastname, dni, mail, phone} = req.body;
 
     let claim = new Claim({
-        name: body.name,              
-        lastname: body.lastname,    
-        dni: body.dni,
-        mail: body.mail,
-        phone: body.phone
+        name,              
+        lastname,    
+        dni,
+        mail,
+        phone,
+        state
     })
 
     try{
