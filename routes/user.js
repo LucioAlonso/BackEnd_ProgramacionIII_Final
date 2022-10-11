@@ -1,6 +1,12 @@
 const User = require("../models/user");
 const Person = require("../models/person");
+const {generateJWT} = require("../helpers/generator-jwt");
 const express = require("express");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+var salt = bcrypt.genSaltSync(10);
+
 const app = express();
 
 app.post("/user/register", async (req, res) => {
@@ -8,7 +14,7 @@ app.post("/user/register", async (req, res) => {
 
     let user = new User({
         userName: body.userName,              
-        password: body.password,    
+        password: bcrypt.hashSync(body.password, salt),   
         rol: body.rol,
     })
 
@@ -48,34 +54,41 @@ app.post("/user/register", async (req, res) => {
 
 })
 
-app.post("/user/login", async (req, res) => {
-    let body = req.body;
-
+app.post("/user/login", (req, res) => {
+    const {userName, password, rol} = req.body;
     let user = new User({
-        userName: body.userName,              
-        password: body.password,    
-        rol: body.rol,
+        userName,              
+        password,    
+        rol,
     })
        
-    User.find({userName : user.userName, password : user.password } ).exec((err, data) => {
-
-        try{
-            if (data[0]["rol"] === "admin"){
-                console.log("el usuario puede ingresar como ADMINISTRADOR")  
-            } else {
-                console.log("el usuario puede ingresar como CONTRIBUYENTE")
-            }
-    
-            res.json({
-                res:"ok",
-                login: "ok",
-                rol : data[0]["rol"]
-            });
-        }catch{
+    User.findOne({userName : user.userName} ).exec(async (err, data) => {
+        if(err)                   //si hay un error con la conexion de la base de datos
+        {
             res.status(500).json({
+                res:"fail",
+                err
+            }); 
+        }
+        else if(!data){           //si no llega nada entonces no existe el usuario
+            res.status(400).json({
                 res:"fail",
                 error: "The username or password entered is invalid"
             }); 
+        }
+        else if(bcrypt.compareSync(password, data.password))      //esta el usuario, compara las constraseñas
+        {
+            const token = await generateJWT(data._id);
+            res.status(200).json({
+                user,
+                token
+            })
+            /*
+            if (data.rol === "admin"){
+                console.log("el usuario puede ingresar como ADMINISTRADOR")  
+            } else {
+                console.log("el usuario puede ingresar como CONTRIBUYENTE")
+            } */
         } 
     })
 })

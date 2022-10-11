@@ -1,7 +1,9 @@
+require("./config/config");
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const port = 3000;
+const bcryptjs = require("bcryptjs")
+
 
 
 const app = express();
@@ -20,6 +22,6 @@ mongoose.connect(mongodb,{}, (err) => {
 })
 
 
-app.listen(port, () =>{
-    console.log(`Escuchando en el puerto ${port}`);
+app.listen(process.env.PORT, () =>{
+    console.log(`Escuchando en el puerto ${process.env.PORT}`);
 });

@@ -12,7 +12,7 @@ app.get("/person/all", (req, res) => {
             }); 
         } 
 
-        res.json({
+        res.status(200).json({
             res:"ok",
             Persons: data
         }); 
@@ -21,7 +21,7 @@ app.get("/person/all", (req, res) => {
 
 app.get("/person/:id", (req, res) => {         //al anteponerle : adelante a id, la conviente en una variable
     const id = req.params.id;                          //asi se resiben los parametros
-    res.json({
+    res.status(200).json({
         res:"ok",
         persons:{_id: id}                    //el _id es el que llega de mongo, el id solo es el que pasamos como parametro
     });
@@ -78,7 +78,7 @@ app.put("/person/edit",async (req, res) => {
 })
 
 app.delete("/person/delete", (req, res) => {
-    res.json({
+    res.status(200).json({
         res:"ok",
         personDelete:{}
     });

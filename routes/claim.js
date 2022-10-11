@@ -1,9 +1,10 @@
 const Claim = require("../models/claim");
+const {checkRol, verifyToken} = require("../middlewares/authentication")  //saco unicamente la propiedad check rol para no usar el authentication.checkRol
 const express = require("express");
 const app = express();
 
-app.get("/claim/all", (req, res) => {
-    claim.find().exec((err, data) => {
+app.get("/claim/all", [verifyToken, checkRol],(req, res) => {         //solamente un administrador lo puede usar
+    Claim.find().exec((err, data) => {
 
         if(err){
             res.status(500).json({
@@ -12,7 +13,7 @@ app.get("/claim/all", (req, res) => {
             }); 
         } 
 
-        res.json({
+        res.status(200).json({
             res:"ok",
             claims: data
         }); 
