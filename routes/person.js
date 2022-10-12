@@ -1,6 +1,6 @@
 const Person = require("../models/person");
 const express = require("express");
-const {checkRol, verifyToken} = require("../middlewares/authentication")
+const {checkRol, verifyToken, checkUserOrAdmin} = require("../middlewares/authentication")
 const app = express();
 
 app.get("/person/all", [verifyToken, checkRol],(req, res) => {
@@ -77,7 +77,7 @@ app.put("/person/edit",async (req, res) => {
     }
 })
 
-app.delete("/person/delete", (req, res) => {
+app.delete("/person/delete", [verifyToken, checkUserOrAdmin] , (req, res) => {
     res.status(200).json({
         res:"ok",
         personDelete:{}
