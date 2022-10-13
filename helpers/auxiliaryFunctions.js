@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Person = require("../models/person");
+const Claim = require("../models/claim");
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 
@@ -44,13 +45,15 @@ const createPerson = (req) => {
 }
 
 const createClaim = (req) => {
-    let {name, lastname, dni, mail, phone} = req.body;
+    let {textClaim ,category, residence} = req.body;
     return claim = new Claim({
-        name,              
-        lastname,    
-        dni,
-        mail,
-        phone,
+        _idUser : req.params.userID,
+        textClaim,
+        createDate : Date,
+        resolveDate : "",
+        category,
+        residence,
+        state : "enabled"
     })
 }
 

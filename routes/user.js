@@ -2,9 +2,8 @@ const User = require("../models/user");
 const Person = require("../models/person");
 const {checkRol, verifyToken, checkIsSameUserOrAdmin} = require("../middlewares/authentication");
 const {generateJWT} = require("../helpers/generator-jwt");
-const {createUserAndPerson, createUser, createPerson, createClaim} = require("../helpers/auxiliaryFunctions");
+const {createUserAndPerson, createUser} = require("../helpers/auxiliaryFunctions");
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 

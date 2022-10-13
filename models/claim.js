@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const claimSchema = new mongoose.Schema({
     _idUser: mongoose.Schema.Types.ObjectId,
-    userName : String,
+    claim : String,
     createDate : Date,
     resolveDate : Date,
     category : String,

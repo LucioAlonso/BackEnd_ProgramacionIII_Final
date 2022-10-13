@@ -49,3 +49,5 @@ Tanto el backend como el fronted van a estar por separado
 ///////////////
 
 Cuando se deshabilita un usuario, tambien hay que deshabilitar a la persona
+-
+Preguntar si al desactivar un usuario, si se quiere crear un nuevo usuario con ese mismo nombre, si se pisa la info que hay o si se elimina el usuario o si se hacen 2 usuarios con el mismo nombre

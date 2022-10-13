@@ -1,8 +1,34 @@
 const Claim = require("../models/claim");
 const {checkRol, verifyToken, checkIsSameUserOrAdmin} = require("../middlewares/authentication")
-const {createUserAndPerson, createUser, createPerson, createClaim} = require("../helpers/auxiliaryFunctions");
+const {createClaim} = require("../helpers/auxiliaryFunctions");
 const express = require("express");
+const Person = require("../models/person");
+const { find } = require("../models/person");
 const app = express();
+const date = new Date();
+
+app.post("/claim/:userID/add", [verifyToken], async (req, res) => {
+    claim = createClaim(req);
+    claim.createDate = date;
+    Person.findById(req.params.userID).exec(async (err, data) => {
+        if(err){
+            res.status(500).json({
+                res : false,
+                err
+            })
+        }else if(!data){
+            res.status(400).json({
+                res : "No user with that id was found."
+            })
+        } else {
+            let result = await claim.save();
+            res.status(200).json({
+                res : "ok",
+                result
+            })
+        }
+    })
+})
 
 app.get("/claim/all", [verifyToken, checkRol],(req, res) => {         //solamente un administrador lo puede usar
     Claim.find().exec((err, data) => {
@@ -19,40 +45,143 @@ app.get("/claim/all", [verifyToken, checkRol],(req, res) => {         //solament
     });
 })
 
-app.get("/claim/:id", (req, res) => {         //al anteponerle : adelante a id, la conviente en una variable
-    const id = req.params.id;                          //asi se resiben los parametros
-    res.json({
-        res:"ok",
-        claims:{_id: id}                    //el _id es el que llega de mongo, el id solo es el que pasamos como parametro
-    });
-})
-
-app.post("/claim/add", async (req, res) => {
-    claim = createClaim();
-    try{
-        let result = await claim.save();  
+app.get("/claim/pendiented/all", [verifyToken, checkRol],(req, res) => {         //solamente un administrador lo puede usar
+    Claim.find({resolveDate : null}).exec((err, data) => {
+        if(err){
+            res.status(500).json({
+                res:"fail",
+                err
+            }); 
+        } 
         res.status(200).json({
             res:"ok",
-            claimScheduled: result
-        });
-    } catch (err){
-        res.status(500).json({
-            err
-        })
-    }
-})
-
-app.put("/claim/edit", (req, res) => {
-    res.json({
-        res:"ok",
-        claimEdited:{}
+            claims: data
+        }); 
     });
 })
 
+app.get("/claim/resolved/all", [verifyToken, checkRol],(req, res) => {         //solamente un administrador lo puede usar y devuelve lo constrario de lo que deberia//////
+    Claim.find({resolveDate : null}).exec((err, data) => {
+        if(err){
+            res.status(500).json({
+                res:"fail",
+                err
+            }); 
+        } 
+        res.status(200).json({
+            res:"ok",
+            claims: data
+        }); 
+    });
+})
+
+app.get("/claim/:userID/all", [verifyToken, checkIsSameUserOrAdmin], (req, res) => {         
+    Claim.find({_idUser : req.params.userID}).exec(async (err, data) => {
+        if(err){
+            res.status(500).json({
+                res : false,
+                err
+            })
+        }else if (!data){
+            res.status(400).json({
+                res : "No complaints were found for that user."
+            })
+        } else {
+            res.status(200).json({
+                res : "ok",
+                data
+            })
+        }
+    })                      
+})
+
+app.get("/claim/:userID/list/resolved", [verifyToken, checkIsSameUserOrAdmin], async (req, res) => { //devuelve lo contrario de lo que deberia////////////
+    Claim.find({_idUser : req.params.userID, resolveDate : null}).exec(async (err, data) => {
+        if(err){
+            res.status(500).json({
+                res : false,
+                err
+            })
+        }else if(!data){
+            res.status(400).json({
+                res : "No user with that id was found."
+            })
+        } else {
+            res.status(200).json({
+                res : "ok",
+                data
+            })
+        }
+    })
+})
+
+app.get("/claim/:userID/list/pendiented", [verifyToken, checkIsSameUserOrAdmin], async (req, res) => {
+    Claim.find({_idUser : req.params.userID, resolveDate : null}).exec(async (err, data) => {
+        if(err){
+            res.status(500).json({
+                res : false,
+                err
+            })
+        }else if(!data){
+            res.status(400).json({
+                res : "No user with that id was found."
+            })
+        } else {
+            res.status(200).json({
+                res : "ok",
+                data
+            })
+        }
+    })
+})
+
+app.post("/claim/:userID/:claimID/resolved", [verifyToken, checkRol],(req, res) => {
+    Claim.findById(req.params.claimID).exec(async (err, data) => {
+        data.resolveDate = date;
+        let result = await data.save();
+        res.status(200).json({
+            res : true,
+            result
+        })
+    })  
+})
+
+app.post("/claim/:userID/:claimID/disabled", [verifyToken, checkIsSameUserOrAdmin],(req, res) => {
+    Claim.findById(req.params.claimID).exec(async (err, data) => {
+        data.state = "disabled";
+        let result = await data.save();
+        res.status(200).json({
+            res : true,
+            result
+        })
+    })  
+})
+
+app.post("/claim/:userID/:claimID/enabled", [verifyToken, checkIsSameUserOrAdmin],(req, res) => {
+    Claim.findById(req.params.claimID).exec(async (err, data) => {
+        data.state = "enabled";
+        let result = await data.save();
+        res.status(200).json({
+            res : true,
+            result
+        })
+    })  
+})
+
+
+//no se borran los datos, simplemente se cambia el valor de la variable state
 app.delete("/claim/delete", (req, res) => {
     res.json({
         res:"ok",
         claimDelete:{}
+    });
+})
+
+//no se deberian poder hacer modificiones en los reclamos (a menos que cree un sistema para que advierta cuando fue modificado)
+app.put("/claim/edit", (req, res) => {
+    res.json({
+        res:"ok",
+        claimEdited:{}
     });
 })
 

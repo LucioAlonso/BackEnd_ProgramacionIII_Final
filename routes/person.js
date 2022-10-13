@@ -1,8 +1,7 @@
 const Person = require("../models/person");
 const express = require("express");
 const {checkRol, verifyToken, checkIsSameUserOrAdmin} = require("../middlewares/authentication");
-const {createUserAndPerson, createUser, createPerson, createClaim} = require("../helpers/auxiliaryFunctions");
-const { findById } = require("../models/user");
+const {createPerson} = require("../helpers/auxiliaryFunctions");
 const app = express();
 
 app.get("/person/all", [verifyToken, checkRol],(req, res) => {
@@ -21,8 +20,8 @@ app.get("/person/all", [verifyToken, checkRol],(req, res) => {
     });
 })
 
-app.get("/person/:id", [verifyToken, checkIsSameUserOrAdmin], (req, res) => {         //al anteponerle : adelante a id, la conviente en una variable
-    Person.findOne( {_id : req.params.id , state : "enabled"}).exec(async(err, data) =>{
+app.get("/person/:userID", [verifyToken, checkIsSameUserOrAdmin], (req, res) => {         //al anteponerle : adelante a id, la conviente en una variable
+    Person.findOne( {_id : req.params.userID , state : "enabled"}).exec(async(err, data) =>{
         if(!data){
             res.status(400).json({
                 res: "The person was not found"

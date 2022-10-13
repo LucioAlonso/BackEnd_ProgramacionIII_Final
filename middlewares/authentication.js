@@ -15,7 +15,7 @@ const checkRol = (req, res, next) =>{        //next es el siguiente middleware
         else {
             res.status(403).json({
                 ok : false,
-                menssage : "que hace usted aqui?"
+                menssage : "You do not have permissions to perform this action."
             })  
         }
         
@@ -30,13 +30,13 @@ const checkIsSameUserOrAdmin = (req, res, next) =>{        //NO TERMINADO, TENDR
                 err
             })  
         }
-        else if((data.rol  == "admin") || (req.user.userID == req.body.userID) || (req.user.userID == req.params.id)){         //verifico si es admin o si es el usuario que esta logueado tratando de modificar un dato de su cuenta
+        else if((data.rol  == "admin") || (req.user.userID == req.body.userID) || (req.user.userID == req.params.userID)){         //verifico si es admin o si es el usuario que esta logueado tratando de modificar un dato de su cuenta
             next();   
         }
         else {
             res.status(403).json({
                 ok : false,
-                menssage : "que hace usted aqui?"
+                menssage : "You do not have permissions to perform this action."
             })  
         }
         
