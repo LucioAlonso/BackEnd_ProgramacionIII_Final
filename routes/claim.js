@@ -1,5 +1,6 @@
 const Claim = require("../models/claim");
-const {checkRol, verifyToken} = require("../middlewares/authentication")  //saco unicamente la propiedad check rol para no usar el authentication.checkRol
+const {checkRol, verifyToken, checkIsSameUserOrAdmin} = require("../middlewares/authentication")
+const {createUserAndPerson, createUser, createPerson, createClaim} = require("../helpers/auxiliaryFunctions");
 const express = require("express");
 const app = express();
 
@@ -27,19 +28,7 @@ app.get("/claim/:id", (req, res) => {         //al anteponerle : adelante a id, 
 })
 
 app.post("/claim/add", async (req, res) => {
-    console.log(req.body); //es por donde se manda la informacion, osea por detras y no por la url
-
-    let {name, lastname, dni, mail, phone} = req.body;
-
-    let claim = new Claim({
-        name,              
-        lastname,    
-        dni,
-        mail,
-        phone,
-        state
-    })
-
+    claim = createClaim();
     try{
         let result = await claim.save();  
         res.status(200).json({

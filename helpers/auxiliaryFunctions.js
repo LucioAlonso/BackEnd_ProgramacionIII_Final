@@ -32,16 +32,27 @@ const createUser = (req) => {
 }
 
 const createPerson = (req) => {
+    let {name, lastname, dni, mail, phone, state} = req.body;
     return person = new Person({
-        _id : user._id,
-        name: "",              
-        lastname: "",    
-        dni: "",
-        mail: "",
-        phone: "",
-        state: "enabled"
+        name,              
+        lastname,    
+        dni,
+        mail,
+        phone,
+        state
+    })
+}
+
+const createClaim = (req) => {
+    let {name, lastname, dni, mail, phone} = req.body;
+    return claim = new Claim({
+        name,              
+        lastname,    
+        dni,
+        mail,
+        phone,
     })
 }
 
 
-module.exports = {createUserAndPerson, createUser, createPerson};
+module.exports = {createUserAndPerson, createUser, createPerson, createClaim};

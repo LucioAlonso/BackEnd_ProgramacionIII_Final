@@ -22,7 +22,7 @@ const checkRol = (req, res, next) =>{        //next es el siguiente middleware
     })
 }
 
-const checkUserOrAdmin = (req, res, next) =>{        //NO TERMINADO, TENDRIA QUE PODER VERIFICAR SI ES EL MISMO USUARIO EL QUE SE QUIERE DAR DE BAJA
+const checkIsSameUserOrAdmin = (req, res, next) =>{        //NO TERMINADO, TENDRIA QUE PODER VERIFICAR SI ES EL MISMO USUARIO EL QUE SE QUIERE DAR DE BAJA
     User.findById(req.user.userID).exec(async (err, data) => { 
         if(err){
             res.status(400).json({
@@ -30,7 +30,7 @@ const checkUserOrAdmin = (req, res, next) =>{        //NO TERMINADO, TENDRIA QUE
                 err
             })  
         }
-        else if(data.rol  == "admin"){         //el req.user.id es un id que lo tengo que usar con un findone para buscar el rol del usuario en la base de datos
+        else if((data.rol  == "admin") || (req.user.userID == req.body.userID) || (req.user.userID == req.params.id)){         //verifico si es admin o si es el usuario que esta logueado tratando de modificar un dato de su cuenta
             next();   
         }
         else {
@@ -64,4 +64,4 @@ const verifyToken = (req, res, next) =>{
     
 }
 
-module.exports = {checkRol, verifyToken, checkUserOrAdmin};           //checkRol : checkRol
+module.exports = {checkRol, verifyToken, checkIsSameUserOrAdmin};           //checkRol : checkRol

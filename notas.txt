@@ -41,3 +41,11 @@ El problema de hacer esto es que si la base de datos borra un usuario por ejempl
 
 ----
 Tanto el backend como el fronted van a estar por separado
+
+
+
+
+
+///////////////
+
+Cuando se deshabilita un usuario, tambien hay que deshabilitar a la persona

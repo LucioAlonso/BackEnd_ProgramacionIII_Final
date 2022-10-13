@@ -1,8 +1,8 @@
 const User = require("../models/user");
 const Person = require("../models/person");
-const {checkRol, verifyToken, checkUserOrAdmin} = require("../middlewares/authentication")
+const {checkRol, verifyToken, checkIsSameUserOrAdmin} = require("../middlewares/authentication");
 const {generateJWT} = require("../helpers/generator-jwt");
-const {createUserAndPerson, createUser, createPerson} = require("../helpers/auxiliaryFunctions");
+const {createUserAndPerson, createUser, createPerson, createClaim} = require("../helpers/auxiliaryFunctions");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -50,11 +50,15 @@ app.post("/user/login", (req, res) => {
     })
 })
 
-app.post("/user/disabled", [verifyToken, checkRol],(req, res) => {
+app.post("/user/disabled", [verifyToken, checkIsSameUserOrAdmin],(req, res) => {
     User.findById(req.body.userID).exec(async (err, data) => {
-        console.log(data.state);
         data.state = "disabled";
         let result = await data.save();
+        Person.findById(req.body.userID).exec(async(err, data) =>{
+            data.state = "disabled";
+            data.save();
+        })
+
         res.status(200).json({
             res : true,
             result
@@ -62,4 +66,21 @@ app.post("/user/disabled", [verifyToken, checkRol],(req, res) => {
     })  
 })
 
-module.exports = app;          //lo devolvemos por si otro quiere usarlo 
+app.post("/user/enabled", [verifyToken, checkRol],(req, res) => {
+    User.findById(req.body.userID).exec(async (err, data) => {
+        data.state = "enabled";
+        let result = await data.save();
+
+        Person.findById(req.body.userID).exec(async(err, data) =>{
+            data.state = "enabled";
+            data.save();
+        })
+
+        res.status(200).json({
+            res : true,
+            result
+        })
+    })  
+})
+
+module.exports = app;          //lo devolvemos por si otro quie
