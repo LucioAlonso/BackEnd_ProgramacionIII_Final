@@ -39,10 +39,9 @@ app.post("/user/login", (req, res) => {
                 error: "The username or password entered is invalid"
             }); 
         } else if (bcrypt.compareSync(user.password, data.password)){
-            console.log(data._id)
             const token = await generateJWT(data._id);
             res.status(200).json({
-                user,
+                data,
                 token
             })
         } 

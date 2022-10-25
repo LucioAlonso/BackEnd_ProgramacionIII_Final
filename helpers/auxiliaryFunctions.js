@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Person = require("../models/person");
 const Claim = require("../models/claim");
+const ClaimsType = require("../models/ClaimsType");
 const bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
 
@@ -57,5 +58,38 @@ const createClaim = (req) => {
     })
 }
 
+const claimTypes = (data) => {
+    const categories = ["alumbrado", "arbolado", "pluvial", "limpieza"]
+    return categories.map(c => [
+        res = {
+            type : c,
+            amount : data.filter(p => p.category === c).length,
+            streets : data.filter(p => p.category === c).map(p => p.residence)
+        }
+    ])
 
-module.exports = {createUserAndPerson, createUser, createPerson, createClaim};
+
+    //return res
+    /*
+    return[arbolado = new ClaimsType({
+        type : "Arbolado",
+        amount : data.filter(p => p.category === "arbolado").length,
+        streets : data.filter(p => p.category === "arbolado").map(p => p.residence)
+    }),
+    plurial = new ClaimsType({
+        type : "Pluvial",
+        amount : data.filter(p => p.category === "plurial").length,
+        streets : data.filter(p => p.category === "plurial").map(p => p.residence)
+    }),
+    alumbrado = new ClaimsType({
+        type : "Alumbrado",
+        amount : data.filter(p => p.category === "alumbrado").length,
+        streets : data.filter(p => p.category === "alumbrado").map(p => p.residence)
+    }),
+    limpieza = new ClaimsType({
+        type : "Limpieza",
+        amount : data.filter(p => p.category === "limpieza").length,
+        streets : data.filter(p => p.category === "limpieza").map(p => p.residence)
+    })] */
+}
+module.exports = {createUserAndPerson, createUser, createPerson, createClaim, claimTypes};

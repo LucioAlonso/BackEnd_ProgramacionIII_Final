@@ -1,6 +1,7 @@
 const Claim = require("../models/claim");
-const {checkRol, verifyToken, checkIsSameUserOrAdmin} = require("../middlewares/authentication")
-const {createClaim} = require("../helpers/auxiliaryFunctions");
+const ClaimsType = require("../models/ClaimsType");
+const {checkRol, verifyToken, checkIsSameUserOrAdmin,checkIsSameUserOrAdmin2} = require("../middlewares/authentication")
+const {createClaim, claimTypes} = require("../helpers/auxiliaryFunctions");
 const express = require("express");
 const Person = require("../models/person");
 const { find } = require("../models/person");
@@ -184,5 +185,53 @@ app.put("/claim/edit", (req, res) => {
         claimEdited:{}
     });
 })
+
+
+////////////////////////////////////////////////////////////////////////
+////PARCIAL2
+
+app.get("/reclamos/parcial2", [verifyToken, checkIsSameUserOrAdmin2], (req, res) => {    
+    if(req.user.userRol == "admin"){
+        Claim.find().exec((err, data) => {
+            if(err){
+                res.status(500).json({
+                    res:"fail",
+                    err
+                }); 
+            }else if (!data){
+                res.status(400).json({
+                    res : "No claim found."
+                })
+            } else {
+
+                res.status(200).json({
+                    res:"ok",
+                    claims : claimTypes(data)
+                });   
+            }
+            
+        });
+    } else {
+        Claim.find({_idUser : req.user.userID}).exec(async (err, data) => {
+            if(err){
+                res.status(500).json({
+                    res : false,
+                    err
+                })
+            }else if (!data){
+                res.status(400).json({
+                    res : "No complaints were found for that user."
+                })
+            } else {
+                res.status(200).json({
+                    res : "ok",
+                    claims : claimTypes(data)
+                })
+            }
+        })  
+    }                 
+})
+
+
 
 module.exports = app;          //lo devolvemos por si otro quiere usarlo
