@@ -58,6 +58,7 @@ const createClaim = (req) => {
     })
 }
 
+//parcial 2
 const claimTypes = (data) => {
     const categories = ["alumbrado", "arbolado", "pluvial", "limpieza"]
     return categories.map(c => [
@@ -67,29 +68,22 @@ const claimTypes = (data) => {
             streets : data.filter(p => p.category === c).map(p => p.residence)
         }
     ])
-
-
-    //return res
-    /*
-    return[arbolado = new ClaimsType({
-        type : "Arbolado",
-        amount : data.filter(p => p.category === "arbolado").length,
-        streets : data.filter(p => p.category === "arbolado").map(p => p.residence)
-    }),
-    plurial = new ClaimsType({
-        type : "Pluvial",
-        amount : data.filter(p => p.category === "plurial").length,
-        streets : data.filter(p => p.category === "plurial").map(p => p.residence)
-    }),
-    alumbrado = new ClaimsType({
-        type : "Alumbrado",
-        amount : data.filter(p => p.category === "alumbrado").length,
-        streets : data.filter(p => p.category === "alumbrado").map(p => p.residence)
-    }),
-    limpieza = new ClaimsType({
-        type : "Limpieza",
-        amount : data.filter(p => p.category === "limpieza").length,
-        streets : data.filter(p => p.category === "limpieza").map(p => p.residence)
-    })] */
 }
-module.exports = {createUserAndPerson, createUser, createPerson, createClaim, claimTypes};
+
+//Recuperatorio parcial 2
+const claimsCategories = (data) => {          //funcion para obtener las categorias de la busqueda obtenida
+    let categories = []
+    data.map(c => categories.push(c.category))
+    categoriesArray = new Set (categories)
+    return cat = [...categoriesArray]
+}
+
+const promedios_resueltos_catergoria = (data) => {
+    claimsCategories(data)
+    return cat.map(c => 
+        promedio = {
+            cat : c,
+            prom_dias_resolucion : Math.round((data.filter(d => (d.category == c)).map(f =>((f.resolveDate - f.createDate)/86400000)).reduce((acu, p) => acu + p) / data.filter(d => (d.category == c)).length))
+        })
+}
+module.exports = {createUserAndPerson, createUser, createPerson, createClaim, claimTypes, promedios_resueltos_catergoria};

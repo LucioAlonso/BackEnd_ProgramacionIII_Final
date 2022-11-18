@@ -1,7 +1,7 @@
 const Claim = require("../models/claim");
 const ClaimsType = require("../models/ClaimsType");
 const {checkRol, verifyToken, checkIsSameUserOrAdmin,checkIsSameUserOrAdmin2} = require("../middlewares/authentication")
-const {createClaim, claimTypes} = require("../helpers/auxiliaryFunctions");
+const {createClaim, claimTypes, promedios_resueltos_catergoria} = require("../helpers/auxiliaryFunctions");
 const express = require("express");
 const Person = require("../models/person");
 const { find } = require("../models/person");
@@ -138,12 +138,23 @@ app.get("/claim/:userID/list/pendiented", [verifyToken, checkIsSameUserOrAdmin],
 
 app.post("/claim/:userID/:claimID/resolved", [verifyToken, checkRol],(req, res) => {
     Claim.findById(req.params.claimID).exec(async (err, data) => {
-        data.resolveDate = date;
-        let result = await data.save();
-        res.status(200).json({
-            res : true,
-            result
-        })
+        if(err){
+            res.status(500).json({
+                res : false,
+                err
+            })
+        }else if(!data){
+            res.status(400).json({
+                res : "The id does not correspond to any claim."
+            })
+        } else {
+            data.resolveDate = date;
+            let result = await data.save();
+            res.status(200).json({
+                res : true,
+                result
+            })
+        }
     })  
 })
 
@@ -230,6 +241,28 @@ app.get("/reclamos/parcial2", [verifyToken, checkIsSameUserOrAdmin2], (req, res)
             }
         })  
     }                 
+})
+
+////////////////////////////////////////////////////////////////////////
+////RECUPERATORIO PARCIAL 2
+
+app.get("/reclamos/prom", [verifyToken, checkRol], (req, res) => {    
+    Claim.find({createDate: { $ne: null }, resolveDate: { $ne: null }}).exec((err, data) => { //ne significa not equal
+        if(err){
+            res.status(500).json({
+                res:"Failed to search for claims.",
+                err
+            }); 
+        }else if (!data){
+            res.status(400).json({
+                res : "No claims found."
+            })
+        } else {
+            res.status(200).json({
+                promedios : promedios_resueltos_catergoria(data)
+            })
+        }   
+    });                  
 })
 
 
