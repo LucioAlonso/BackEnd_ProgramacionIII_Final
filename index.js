@@ -3,10 +3,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const bcryptjs = require("bcryptjs");
+const cors = require('cors')
 
+const whileList = ['http://localhost:3001'];
 
 
 const app = express();
+app.use(cors({ origin: whileList }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(require("./routes/index"));
