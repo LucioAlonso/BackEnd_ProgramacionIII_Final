@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const ClaimsTypeSchema = new mongoose.Schema({
     type : String,
-    amount : Number,
-    streets : [String]
+}, {
+    versionKey: false
 })
 
 const ClaimsType = mongoose.model("ClaimsType", ClaimsTypeSchema);

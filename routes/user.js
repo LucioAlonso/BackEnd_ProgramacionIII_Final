@@ -11,18 +11,31 @@ const app = express();
 
 app.post("/user/register", async (req, res) => {
     const [user, person] = createUserAndPerson(req);
-    if(!(await User.findOne({userName : user.userName}))){
-        let result = await user.save();  
-        await person.save();  
-        res.status(200).json({
-            res:"ok",
-            UserAdd: result
-        });
+
+    if(user.userName != ''){
+        if(!(await User.findOne({userName : user.userName}))){
+            if(person.mail == '' || person.name == '' || person.lastname == '' || person.dni == '' || person.phone == ''){
+                res.status(500).json({
+                    err : 'Complete todos los campos faltantes'
+                })
+            } else {
+                let result = await user.save();  
+                await person.save();  
+                res.status(200).json({
+                    res:"ok",
+                    UserAdd: result
+                });
+            }
+        } else {
+            res.status(500).json({
+                err : "Ya existe un usuario con ese nombre"
+            })
+        } 
     } else {
         res.status(500).json({
-            err : "A user with that name already exists"
+            err : 'Coloque un nombre de usuario valido'
         })
-    } 
+    }
 })
 
 app.post("/user/login", (req, res) => {
@@ -36,7 +49,7 @@ app.post("/user/login", (req, res) => {
         } else if(!data){
             res.status(400).json({
                 res:"fail",
-                error: "The username or password entered is invalid"
+                error: "El usuario o la contraseña ingresados son invalidos"
             }); 
         } else if (bcrypt.compareSync(user.password, data.password)){
             const token = await generateJWT(data._id);
@@ -44,7 +57,12 @@ app.post("/user/login", (req, res) => {
                 data,
                 token
             })
-        } 
+        } else {
+            res.status(200).json({
+                res:"fail",
+                error: "El usuario o la contraseña ingresados son invalidos"
+            })
+        }
     })
 })
 

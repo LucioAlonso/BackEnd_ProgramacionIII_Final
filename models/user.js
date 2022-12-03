@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
 
 userSchema.virtual("getRol").get(function () {
     return this.rol;
+}, {
+    versionKey: false
 })
 
 

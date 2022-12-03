@@ -7,6 +7,8 @@ const claimSchema = new mongoose.Schema({
     category : String,
     residence : String,
     state : String
+}, {
+    versionKey: false
 })
 
 const Claim = mongoose.model("claim", claimSchema);

@@ -22,11 +22,17 @@ app.post("/claim/:userID/add", [verifyToken], async (req, res) => {
                 res : "No user with that id was found."
             })
         } else {
-            let result = await claim.save();
-            res.status(200).json({
-                res : "ok",
-                result
-            })
+            if(claim.claim != '' && claim.category != '' && claim.residence != ''){
+                let result = await claim.save();
+                res.status(200).json({
+                    res : "ok",
+                    result
+                })
+            } else {
+                res.status(500).json({
+                    res : 'Complete todos los campos'
+                })
+            }
         }
     })
 })

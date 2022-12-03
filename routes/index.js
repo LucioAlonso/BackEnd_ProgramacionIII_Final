@@ -5,5 +5,6 @@ const app = express();
 app.use(require("./person"));
 app.use(require("./user"));
 app.use(require("./claim"));
+app.use(require("./claimsType"));
 
 module.exports = app;  

@@ -13,6 +13,8 @@ const personSchema = new mongoose.Schema({
     nacimiento: Date,
     _autoId: mongoose.Schema.Types.ObjectId //para un tipo id (empiezan por convencion siempre con _ al comienzo)
     */
+}, {
+    versionKey: false
 })
 
 personSchema.virtual("fullName").get(function () {
