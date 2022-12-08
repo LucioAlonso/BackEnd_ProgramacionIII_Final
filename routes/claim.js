@@ -142,7 +142,7 @@ app.get("/claim/:userID/list/pendiented", [verifyToken, checkIsSameUserOrAdmin],
     })
 })
 
-app.post("/claim/:userID/:claimID/resolved", [verifyToken, checkRol],(req, res) => {
+app.post("/claim/:claimID/resolved", [verifyToken, checkRol],(req, res) => {
     Claim.findById(req.params.claimID).exec(async (err, data) => {
         if(err){
             res.status(500).json({
@@ -155,6 +155,7 @@ app.post("/claim/:userID/:claimID/resolved", [verifyToken, checkRol],(req, res) 
             })
         } else {
             data.resolveDate = date;
+            data.state = "disabled";
             let result = await data.save();
             res.status(200).json({
                 res : true,
