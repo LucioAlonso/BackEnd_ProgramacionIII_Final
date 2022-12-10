@@ -5,6 +5,7 @@ const {createClaim, claimTypes, promedios_resueltos_catergoria} = require("../he
 const express = require("express");
 const Person = require("../models/person");
 const { find } = require("../models/person");
+const User = require("../models/user");
 const app = express();
 const date = new Date();
 
@@ -186,6 +187,33 @@ app.post("/claim/:userID/:claimID/enabled", [verifyToken, checkIsSameUserOrAdmin
         })
     })  
 })
+
+
+app.get("/claim/:userName", [verifyToken, checkIsSameUserOrAdmin], async (req, res) => {
+    if(req.params.userName != ''){
+            await User.findOne({userName : req.params.userName}).exec((err, dataUser) => {
+            if(err){
+                res.status(400).json({
+                    err : 'No se encontro un usuario con ese nombre'
+                })
+            } else {
+                Claim.find({'_idUser' : dataUser._id}).exec((err, data) => {
+                    res.status(200).json({
+                        res : "ok",
+                        data 
+                    })
+                })
+            }
+        })
+    } else {
+        res.status(500).json({
+            err : 'Coloque un nombre de usuario valido'
+        })
+    }
+})
+
+
+
 
 
 //no se borran los datos, simplemente se cambia el valor de la variable state
