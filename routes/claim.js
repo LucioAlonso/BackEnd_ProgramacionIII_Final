@@ -193,10 +193,14 @@ app.get("/claim/:userName", [verifyToken, checkIsSameUserOrAdmin], async (req, r
     if(req.params.userName != ''){
             await User.findOne({userName : req.params.userName}).exec((err, dataUser) => {
             if(err){
+                res.status(500).json({
+                    err : 'No se encontro un usuario con ese nombre'
+                })
+            } else if (!dataUser){
                 res.status(400).json({
                     err : 'No se encontro un usuario con ese nombre'
                 })
-            } else {
+            }  else {
                 Claim.find({'_idUser' : dataUser._id}).exec((err, data) => {
                     res.status(200).json({
                         res : "ok",
