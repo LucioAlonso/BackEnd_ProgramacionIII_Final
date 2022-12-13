@@ -84,7 +84,7 @@ app.get("/claim/resolved/all", [verifyToken, checkRol],(req, res) => {         /
 })
 
 app.get("/claim/:userID/all", [verifyToken, checkIsSameUserOrAdmin], (req, res) => {         
-    Claim.find({_idUser : req.params.userID}).exec(async (err, data) => {
+    Claim.find({_idUser : req.params.userID, state : "enabled"}).exec(async (err, data) => {
         if(err){
             res.status(500).json({
                 res : false,
@@ -156,7 +156,6 @@ app.post("/claim/:claimID/resolved", [verifyToken, checkRol],(req, res) => {
             })
         } else {
             data.resolveDate = date;
-            data.state = "disabled";
             let result = await data.save();
             res.status(200).json({
                 res : true,
@@ -191,7 +190,7 @@ app.post("/claim/:userID/:claimID/enabled", [verifyToken, checkIsSameUserOrAdmin
 
 app.get("/claim/:userName", [verifyToken, checkIsSameUserOrAdmin], async (req, res) => {
     if(req.params.userName != ''){
-            await User.findOne({userName : req.params.userName}).exec((err, dataUser) => {
+            await User.findOne({userName : req.params.userName, state : "enabled"}).exec((err, dataUser) => {
             if(err){
                 res.status(500).json({
                     err : 'No se encontro un usuario con ese nombre'
